@@ -10,6 +10,13 @@ class Usuario {
   String token;
   List<String> roles;
 
+  Usuario({
+    this.nome,
+    this.login,
+    this.email,
+    this.urlFoto,
+  });
+
   Usuario.fromJson(Map<String, dynamic> map)
       : this.id = map["id"],
         this.nome = map["nome"],
