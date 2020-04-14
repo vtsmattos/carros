@@ -31,13 +31,12 @@ class UploadService {
       print("params: " + json);
 
       final response = await post(
-            url,
-            body: json,
-          )
-          .timeout(
-            Duration(seconds: 30),
-            onTimeout: _onTimeOut,
-          );
+        url,
+        body: json,
+      ).timeout(
+        Duration(seconds: 30),
+        onTimeout: _onTimeOut,
+      );
 
       if (response.statusCode == 200) {
         print("http.upload << " + response.body);
@@ -46,15 +45,16 @@ class UploadService {
 
         String urlFoto = map["url"];
 
-        return ApiResponse.ok(urlFoto);
+        return ApiResponse.ok(result: urlFoto);
       }
 
       if (response.body == null || response.body.isEmpty) {
         return ApiResponse.error(
-            "Não foi possível realizar o upload do arquivo");
+            msg: "Não foi possível realizar o upload do arquivo");
       }
     } catch (e) {
-      return ApiResponse.error("Não foi possível realizar o upload do arquivo");
+      return ApiResponse.error(
+          msg: "Não foi possível realizar o upload do arquivo");
     }
   }
 

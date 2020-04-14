@@ -27,7 +27,6 @@ class CarroApi {
         if (response.ok) {
           c.urlFoto = response.result;
         }
-
       }
       var url = "http://carros-springboot.herokuapp.com/api/v2/carros";
       if (c.id != null) {
@@ -45,15 +44,15 @@ class CarroApi {
         Carro carro = Carro.fromMap(mapResponse);
         print("Carro id: ${carro.id}");
 
-        return ApiResponse.ok(true);
+        return ApiResponse.ok(result: true);
       }
 
       if (response.body == null || response.body.isEmpty) {
-        return ApiResponse.error("Não foi possível salvar o carro");
+        return ApiResponse.error(msg: "Não foi possível salvar o carro");
       }
-      return ApiResponse.error(mapResponse["error"]);
+      return ApiResponse.error(msg: mapResponse["error"]);
     } catch (e) {
-      return ApiResponse.error("Não foi possível salvar o carro");
+      return ApiResponse.error(msg: "Não foi possível salvar o carro");
     }
   }
 
@@ -70,15 +69,15 @@ class CarroApi {
 
       Map mapResponse = convert.json.decode(response.body);
       if (response.statusCode == 200) {
-        return ApiResponse.ok(true);
+        return ApiResponse.ok(result: true);
       }
 
       if (response.body == null || response.body.isEmpty) {
-        return ApiResponse.error("Não foi possível deletar o carro");
+        return ApiResponse.error(msg: "Não foi possível deletar o carro");
       }
-      return ApiResponse.error(mapResponse["error"]);
+      return ApiResponse.error(msg: mapResponse["error"]);
     } catch (e) {
-      return ApiResponse.error("Não foi possível deletar o carro");
+      return ApiResponse.error(msg: "Não foi possível deletar o carro");
     }
   }
 }
