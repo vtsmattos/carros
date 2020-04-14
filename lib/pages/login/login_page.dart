@@ -1,12 +1,17 @@
 import 'dart:async';
+
 import 'package:carros/pages/carros/home_page.dart';
+import 'package:carros/pages/carros/simple_bloc.dart';
+import 'package:carros/pages/login/firebase_service.dart';
 import 'package:carros/pages/login/login_bloc.dart';
+import 'package:carros/pages/usuario/cadastro_page.dart';
 import 'package:carros/utils/alert.dart';
 import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/app_button.dart';
 import 'package:carros/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+
 import '../api_response.dart';
 
 class LoginPage extends StatefulWidget {
@@ -57,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                 password: true,
                 controller: _tSenha,
                 validator: _validateSenha,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 focusNode: _focusSenha),
             _sizedBox(),
@@ -78,6 +83,21 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: _onClickGoogle,
               ),
             ),
+            Container(
+                height: 46,
+                margin: EdgeInsets.only(top: 20),
+                child: InkWell(
+                  onTap: _onClickCadastrar,
+                  child: Text(
+                    "Cadastre-se",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ))
           ],
         ),
       ),
@@ -115,7 +135,14 @@ class _LoginPageState extends State<LoginPage> {
 
     print("Login: $login Senha: $senha");
 
-    ApiResponse response = await _bloc.login(login, senha);
+    final buttonBloc = BooleanBloc();
+    buttonBloc.add(true);
+
+    //ApiResponse response = await _bloc.login(login, senha);
+    final service = FirebaseService();
+    ApiResponse response = await service.login(login, senha);
+
+    buttonBloc.add(false);
 
     if (response.ok) {
       push(context, HomePage(), replace: true);
@@ -130,7 +157,18 @@ class _LoginPageState extends State<LoginPage> {
     _bloc.dispose();
   }
 
-  void _onClickGoogle() {
-    print("Google");
+  Future<void> _onClickGoogle() async {
+    final service = FirebaseService();
+    ApiResponse response = await service.loginGoogle();
+
+    if (response.ok) {
+      push(context, HomePage(), replace: true);
+    } else {
+      alert(context, response.msg);
+    }
+  }
+
+  void _onClickCadastrar() {
+    push(context, CadastroPage(), replace: true);
   }
 }
