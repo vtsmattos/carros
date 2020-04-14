@@ -1,8 +1,11 @@
 import 'package:carros/pages/api_response.dart';
 import 'package:carros/pages/login/usuario.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+String firebaseUserId;
 
 class FirebaseService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -25,6 +28,7 @@ class FirebaseService {
           email: user.email,
           urlFoto: user.photoUrl);
       usuario.save();
+      saveUser(user);
 
       return ApiResponse.ok();
     } catch (e) {
@@ -61,6 +65,7 @@ class FirebaseService {
           email: user.email,
           urlFoto: user.photoUrl);
       usuario.save();
+      saveUser(user);
 
       return ApiResponse.ok();
     } catch (e) {
@@ -102,6 +107,21 @@ class FirebaseService {
             msg: "Erro ao criar usuário. \n\n ${e.message}");
       }
       return ApiResponse.error(msg: "Não foi possível criar o usuário.");
+    }
+  }
+
+  void saveUser(FirebaseUser user) {
+    if (user != null) {
+      firebaseUserId = user.uid;
+      DocumentReference refUser =
+          Firestore.instance.collection("users").document(firebaseUserId);
+
+      refUser.setData({
+        'nome': user.displayName,
+        'email': user.email,
+        'login': user.email,
+        'urlFoto': user.photoUrl,
+      });
     }
   }
 }

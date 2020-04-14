@@ -1,40 +1,35 @@
-import 'package:carros/favoritos/favorito.dart';
-import 'package:carros/favoritos/favorito_dao.dart';
-import 'package:carros/favoritos/favoritos_bloc.dart';
-import 'package:carros/favoritos/favoritos_model.dart';
 import 'package:carros/pages/carros/carro.dart';
-import 'package:carros/pages/carros/carro_dao.dart';
-import 'package:provider/provider.dart';
+import 'package:carros/pages/login/firebase_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FavoritoService {
-  static Future<bool> favoritar(context, Carro c) async {
-    bool favorito = false;
-    Favorito f = Favorito.fromCarro(c);
-    final dao = FavoritoDao();
-    final exists = await dao.exists(c.id);
-    if (exists) {
-      dao.delete(c.id);
-    } else {
-      dao.save(f);
-      favorito = true;
+
+  //CollectionReference get _carros => Firestore.instance.collection("carros");
+  CollectionReference get _users => Firestore.instance.collection("users");
+  get _carros => _users.document(firebaseUserId).collection("carros");
+
+  Stream<QuerySnapshot> get stream => _carros.snapshots();
+  
+  Future<bool> favoritar(Carro c) async {
+
+    DocumentReference docRef = _carros.document("${c.id}");
+    DocumentSnapshot doc = await docRef.get();
+    final exists = doc.exists;
+
+    if(exists){
+      docRef.delete();
+          return false;
     }
-    //using pattern BLOC
-    //FavoritosBloc favoritosBloc = Provider.of<FavoritosBloc>(context);
-    //favoritosBloc.fetch();
-    
-    //with default Provider
-    Provider.of<FavoritosModel>(context, listen: false).getCarros();
-    return favorito;
+    else{
+      docRef.setData(c.toMap());
+    }
+
+    return true;
   }
 
-  static Future<List<Carro>> getCarros() async {
-    List<Carro> carros = await CarroDAO().getCarros();
-    return carros;
-  }
-
-  static Future<bool> isFavorito(Carro c) async {
-    final dao = FavoritoDao();
-    final exists = await dao.exists(c.id);
-    return exists;
+  Future<bool> isFavorito(Carro c) async {
+    DocumentReference docRef = _carros.document("${c.id}");
+    DocumentSnapshot doc = await docRef.get();
+    return doc.exists;
   }
 }

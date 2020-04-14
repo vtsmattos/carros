@@ -36,7 +36,7 @@ Future<Map<String, String>> _headers() async {
   Usuario usuario = await Usuario.get();
   Map<String, String> headers = {
     "Content-Type": "application/json",
-    "Authorization": "Bearer ${usuario.token}",
+   // "Authorization": "Bearer ${usuario.token}",
   };
   return headers;
 }
