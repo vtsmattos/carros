@@ -11,7 +11,7 @@ enum TipoCarro { classicos, esportivos, luxo }
 class CarroApi {
   static Future<List<Carro>> getCarros(TipoCarro tipo) async {
     String s = tipo.toString().replaceAll("TipoCarro.", "");
-    var url = "http://carros-springboot.herokuapp.com/api/v2/carros/tipo/$s";
+    var url = "http://carros-springboot.herokuapp.com/api/v1/carros/tipo/$s";
     var response = await http.get(url);
     String json = response.body;
     List mapResponse = convert.json.decode(json);
@@ -28,7 +28,7 @@ class CarroApi {
           c.urlFoto = response.result;
         }
       }
-      var url = "http://carros-springboot.herokuapp.com/api/v2/carros";
+      var url = "http://carros-springboot.herokuapp.com/api/v1/carros";
       if (c.id != null) {
         url += "/${c.id}";
       }
@@ -58,7 +58,7 @@ class CarroApi {
 
   static Future<ApiResponse<bool>> delete(Carro c) async {
     try {
-      var url = "http://carros-springboot.herokuapp.com/api/v2/carros";
+      var url = "http://carros-springboot.herokuapp.com/api/v1/carros";
       if (c.id != null) {
         url += "/${c.id}";
       }

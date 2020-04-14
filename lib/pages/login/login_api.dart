@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class LoginApi {
   static Future<ApiResponse> loginJWT(login, senha) async {
     try {
-      var url = 'http://carros-springboot.herokuapp.com/api/v2/login';
+      var url = 'http://carros-springboot.herokuapp.com/api/v1/login';
 
       Map<String, String> headers = {
         "Content-Type": "application/json",

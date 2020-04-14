@@ -1,4 +1,5 @@
 import 'package:carros/pages/carros/home_page.dart';
+import 'package:carros/pages/login/firebase_service.dart';
 import 'package:carros/pages/login/login_page.dart';
 import 'package:carros/pages/login/usuario.dart';
 import 'package:carros/utils/nav.dart';
@@ -24,7 +25,8 @@ class _SplashPageState extends State<SplashPage> {
 
     Future.wait([futureUser, futureDB]).then((List values) {
       FirebaseUser u = values[0];
-      if (u != null && u.email != null) {
+      if (u != null && u.uid != null) {
+        firebaseUserId = u.uid;
         push(context, HomePage(), replace: true);
       }
       else{
